@@ -1,0 +1,113 @@
+package com.parking.domain.michap21;
+import com.parking.service.michap21.ParkingTicketLookupService;
+
+
+public class Terminal {
+
+	private Sale sale;
+	private ParkingTicket inputParkingTicket;
+	private static final int RATE_PER_MINUTE = 5;
+	private float paymentOwed;
+	
+
+	public Sale getSale() {
+		return sale;
+	}
+
+
+	public void setSale(Sale sale) {
+		this.sale = sale;
+	}
+
+
+	public int getRatePerMinute() {
+		return RATE_PER_MINUTE;
+	}
+
+
+	public float getPaymentOwed() {
+		return paymentOwed;
+	}
+
+
+	public void setPaymentOwed(float paymentOwed) {
+		this.paymentOwed = paymentOwed;
+	}
+	
+	
+	public ParkingTicket getInputParkingTicket() {
+		return inputParkingTicket;
+	}
+
+
+	public void setInputParkingTicket(ParkingTicket inputParkingTicket) {
+		this.inputParkingTicket = inputParkingTicket;
+	}
+
+
+	public float calculatePayment(ParkingTicket userParkingTicket) {
+		
+		if(userParkingTicket.getMinutesActive() == 0){
+			
+			userParkingTicket.setRedemptionTime(System.currentTimeMillis());
+			long millisecondsParked = calculateTimeParked(userParkingTicket);		
+			paymentOwed = convertMillisecondsToMinutes(millisecondsParked) * getRatePerMinute();
+			this.setPaymentOwed(paymentOwed);
+			this.setInputParkingTicket(userParkingTicket);
+						
+			return paymentOwed;	
+		}
+		
+		 return 0;						
+	}
+	
+	
+	
+	private float convertMillisecondsToMinutes(long millisecondsParked){
+		
+		float seconds = (float) ((millisecondsParked/1000) %60);
+
+		float minutes = (float) (((millisecondsParked-seconds)/1000) /60);	
+		
+		float roundedMinutes = (float) (Math.round(minutes*100.0)/100.0);
+		
+		//Fractions of minutes will be returned for precision purposes.
+		return roundedMinutes;		
+	}
+	
+	
+	
+	private long calculateTimeParked(ParkingTicket parkingTicket){
+		
+		long difference = parkingTicket.getRedemptionTime() - parkingTicket.getCreationTime();
+		
+		parkingTicket.setMinutesActive(difference);
+		
+		return difference;	
+		
+	}
+
+
+	public float calculateBalance(float amountPaid) {
+			
+		float balance = this.getPaymentOwed() - amountPaid;
+		
+		if(balance > 0){
+			
+			return balance;
+		}
+		
+		return balance;
+	}
+
+	
+
+	public void storePaymentRecord(ParkingTicketLookupService parkingTicketLookupService) {
+
+		ParkingTicket currentTicket = parkingTicketLookupService.getParkingTicketRecord(this.getInputParkingTicket().getParkingTicketId());
+		currentTicket.setStatus("Redeemed");
+		currentTicket.setFundsGenerated(this.getPaymentOwed());
+		
+	}
+	
+}
