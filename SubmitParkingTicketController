@@ -1,0 +1,42 @@
+package com.parking.controllers.michap21;
+import com.parking.domain.michap21.ParkingGarage;
+import com.parking.service.michap21.ParkingTicketLookupService;
+
+
+public class SubmitParkingTicketController {
+	
+	private ParkingGarage parkingGarage;
+	private ParkingTicketLookupService parkingTicketLookupService;
+
+	public SubmitParkingTicketController(ParkingGarage parkingGarage, ParkingTicketLookupService parkingTicketLookupService) {
+		
+		this.parkingGarage = parkingGarage;	
+		this.parkingTicketLookupService = parkingTicketLookupService;
+	}
+
+	public int submitCashPayment(String payment) throws NumberFormatException {
+		
+		float parsedPayment = Float.parseFloat(payment);
+		float balance = parkingGarage.getExitGate().getTerminal().calculateBalance(parsedPayment);
+		
+		return 0;
+		
+	}
+
+	public boolean submitCreditPayment(String paymentOrCardNumber) throws NumberFormatException{
+		
+	    if(paymentOrCardNumber.length() == 16){
+	    	
+	    	Long.parseLong(paymentOrCardNumber);
+	    	parkingGarage.getExitGate().getTerminal().storePaymentRecord(parkingTicketLookupService);
+	    	parkingGarage.getParkingLot().incrementAvailableParkingSpaces();
+    	
+	    	return true;
+	    	
+	    }
+	    
+	    return false;
+	}
+
+	
+}
