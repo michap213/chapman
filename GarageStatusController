@@ -1,0 +1,34 @@
+package com.parking.controllers.michap21;
+
+import com.parking.domain.michap21.ParkingGarage;
+import com.parking.service.michap21.ParkingTicketLookupService;
+
+
+public class GarageStatusController {
+  
+ private ParkingGarage parkingGarage;
+ private ParkingTicketLookupService parkingTicketLookupService;
+	
+	
+  public GarageStatusController(ParkingGarage parkingGarage, ParkingTicketLookupService parkingTicketLookupService) {
+	  
+	  this.parkingGarage = parkingGarage;
+	  this.parkingTicketLookupService = parkingTicketLookupService;
+	
+  }
+
+
+  public int getAvailableParkingSpaces() {
+		
+	 return parkingGarage.getParkingLot().getAvailableParkingSpaces();
+  }
+  
+  
+  public int getRatePerMinute(){
+	    
+	 return parkingGarage.getExitGate().getTerminal().getRatePerMinute();
+  }
+  
+  
+	
+}
