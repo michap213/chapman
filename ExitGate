@@ -1,0 +1,17 @@
+package com.parking.domain.michap21;
+
+
+public class ExitGate {
+
+	private Terminal terminal  = new Terminal();
+
+	public Terminal getTerminal() {
+		return terminal;
+	}
+
+	public void setTerminal(Terminal terminal) {
+		this.terminal = terminal;
+	}
+		
+	
+}
