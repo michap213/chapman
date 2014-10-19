@@ -1,0 +1,19 @@
+package com.parking.domain.michap21;
+
+
+public class EntryGate {
+
+	
+	private TicketDispenser ticketDispenser = new TicketDispenser();
+
+	
+	public TicketDispenser getTicketDispenser() {
+		return ticketDispenser;
+	}
+
+	public void setTicketDispenser(TicketDispenser ticketDispenser) {
+		this.ticketDispenser = ticketDispenser;
+	}
+		
+	
+}
