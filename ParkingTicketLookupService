@@ -1,0 +1,13 @@
+package com.parking.service.michap21;
+
+import com.parking.domain.michap21.ParkingTicket;
+
+
+public interface ParkingTicketLookupService {
+	
+	public ParkingTicket getParkingTicketRecord(int parkingTicketId);
+	public void addParkingTicketRecord(ParkingTicket parkingTicket);
+	public void deleteParkingTicketRecord(ParkingTicket parkingTicket);
+	public float getAllParkingTicketSales();
+
+}
