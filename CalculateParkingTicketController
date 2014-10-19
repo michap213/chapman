@@ -1,0 +1,23 @@
+package com.parking.controllers.michap21;
+import com.parking.domain.michap21.ParkingGarage;
+import com.parking.domain.michap21.ParkingTicket;
+
+
+public class CalculateParkingTicketController {
+	
+	private ParkingGarage parkingGarage;
+
+	
+	public CalculateParkingTicketController(ParkingGarage parkingGarage) {
+		
+		this.parkingGarage = parkingGarage;
+	}
+
+
+	public float calculatePayment(ParkingTicket retrievedParkingTicket) {
+
+		return parkingGarage.getExitGate().getTerminal().calculatePayment(retrievedParkingTicket);
+		
+	}
+
+}
