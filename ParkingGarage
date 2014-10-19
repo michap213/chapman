@@ -1,0 +1,70 @@
+package com.parking.domain.michap21;
+
+
+public class ParkingGarage {
+	
+
+	private EntryGate entryGate = new EntryGate();
+	private ExitGate exitGate = new ExitGate();
+	private ParkingLot parkingLot = new ParkingLot(10);
+	private int numberOfCustomers = 0;
+	
+	
+	public ParkingLot getParkingLot() {
+		return parkingLot;
+	}
+
+
+	public void setParkingLot(ParkingLot parkingLot) {
+		this.parkingLot = parkingLot;
+	}
+
+
+	public EntryGate getEntryGate() {
+		return this.entryGate;
+	}
+
+
+	public void setEntryGate(EntryGate entryGate) {
+		this.entryGate = entryGate;
+	}
+
+
+	public ExitGate getExitGate() {
+		return this.exitGate;
+	}
+
+
+	public void setExitGate(ExitGate exitGate) {
+		this.exitGate = exitGate;
+	}
+
+
+	public int getNumberOfCustomers() {
+		return numberOfCustomers;
+	}
+
+
+	public void setNumberOfCustomers(int numberOfCustomers) {
+		this.numberOfCustomers = numberOfCustomers;
+	}
+
+
+	public void updateParkingLotWithNewVehicle() {
+
+        parkingLot.decrementAvailableParkingSpaces();
+        		
+	}
+
+
+	public boolean parkingIsAvailable() {
+	 
+		if(this.getParkingLot().getAvailableParkingSpaces() >= 1){
+			
+			return true;
+		}
+		
+		return false;
+	}
+
+}
