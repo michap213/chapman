@@ -1,0 +1,46 @@
+package com.parking.domain.michap21;
+
+
+
+public class ParkingLot {
+
+	private int availableParkingSpaces;
+	private static final int totalParkingSpaces = 10;
+
+	
+	public ParkingLot(int availableParkingSpaces){
+		
+		this.availableParkingSpaces = availableParkingSpaces;
+	}
+
+	public int getTotalParkingSpaces() {
+		
+		return ParkingLot.totalParkingSpaces;
+	}
+
+	public int getAvailableParkingSpaces() {
+		
+		return this.availableParkingSpaces;
+	}
+	
+
+	public void decrementAvailableParkingSpaces() {
+		
+		 if(this.availableParkingSpaces > 0){
+			 
+			 this.availableParkingSpaces = this.availableParkingSpaces - 1;
+		 }		
+	}
+	
+	
+	public void incrementAvailableParkingSpaces(){
+		
+		if(this.availableParkingSpaces < getTotalParkingSpaces()){
+			
+			this.availableParkingSpaces = this.availableParkingSpaces + 1;
+			
+		}
+		
+	}
+	
+}
