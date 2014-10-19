@@ -1,0 +1,62 @@
+package com.parking.service.michap21;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.parking.domain.michap21.ParkingTicket;
+
+
+public class ParkingTicketLookupServiceImpl implements ParkingTicketLookupService{
+//Make this class Singleton.
+	
+	
+	private Set<ParkingTicket> parkingTicketRecords =  new HashSet<ParkingTicket>();
+
+	
+	
+	@Override
+	public ParkingTicket getParkingTicketRecord(int parkingTicketId) {
+		
+		for(ParkingTicket parkingTicket : parkingTicketRecords){
+			
+			if(parkingTicket.getParkingTicketId() == parkingTicketId){
+				
+				return parkingTicket;
+			}
+	
+		}
+		
+		return null;
+	}
+	
+	
+	
+	public float getAllParkingTicketSales(){
+		
+		float totalSales = 0;
+		
+		for(ParkingTicket parkingTicket : parkingTicketRecords){
+			
+			totalSales = totalSales + parkingTicket.getFundsGenerated();
+		}
+		
+		return totalSales;
+		
+	}
+	
+	  
+	
+	@Override
+	public void addParkingTicketRecord(ParkingTicket parkingTicket) {
+		
+		this.parkingTicketRecords.add(parkingTicket);
+	}
+
+	
+	
+	@Override
+	public void deleteParkingTicketRecord(ParkingTicket parkingTicket) {
+		
+		this.parkingTicketRecords.remove(parkingTicket);
+	}
+
+}
