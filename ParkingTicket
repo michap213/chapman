@@ -1,0 +1,77 @@
+package com.parking.domain.michap21;
+
+public class ParkingTicket {
+	
+	
+	private int parkingTicketId = 0;
+	private long creationTime = 0;
+    private long redemptionTime = 0;   
+    private long minutesActive = 0;
+    private String status = null;
+    private float fundsGenerated;
+    
+        
+	public void setParkingTicketId(int parkingTicketId) {
+		
+		this.parkingTicketId = parkingTicketId;		
+	}
+	
+	public int getParkingTicketId() {
+		
+		return parkingTicketId;
+	}
+
+	public void setCreationTime(long creationTime) {
+		
+		this.creationTime = creationTime;		
+	}
+	
+	public long getCreationTime(){
+		
+		return creationTime;
+	}
+	
+	public void setRedemptionTime(long redemptionTime){
+		
+		this.redemptionTime = redemptionTime;
+		
+	}
+	
+	public long getRedemptionTime(){
+		
+		return redemptionTime;
+		
+	}
+
+	public long getMinutesActive() {
+		
+		return minutesActive;
+	}
+
+	public void setMinutesActive(long difference) {
+		
+		this.minutesActive = difference;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public float getFundsGenerated() {
+		return fundsGenerated;
+	}
+
+	public void setFundsGenerated(float fundsGenerated) {
+		this.fundsGenerated = fundsGenerated;
+	}
+	
+	
+	
+	
+	
+
+}
