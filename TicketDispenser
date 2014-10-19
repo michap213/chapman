@@ -1,0 +1,43 @@
+package com.parking.domain.michap21;
+
+
+import java.util.Random;
+
+
+public class TicketDispenser {
+	
+	
+	private ParkingTicket parkingTicket;		
+	
+	
+	public ParkingTicket createParkingTicket(ParkingLot parkingLot) {
+			
+			parkingTicket = new ParkingTicket();
+			setupNewParkingTicket(parkingTicket);
+			parkingLot.decrementAvailableParkingSpaces();
+			
+			return parkingTicket;    	
+	}
+	
+	
+	
+	private void setupNewParkingTicket(ParkingTicket parkingTicket){
+			 
+	   parkingTicket.setParkingTicketId(generateParkingTicketId());
+	   parkingTicket.setCreationTime(System.currentTimeMillis());
+	   parkingTicket.setStatus("Active");
+	   
+	}
+	
+	
+	
+	private int generateParkingTicketId(){
+			
+		Random random = new Random();
+		int parkingTicketId = random.nextInt(90000) + 10000;
+			
+		return parkingTicketId;
+	}
+
+	
+}
