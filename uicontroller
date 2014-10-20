@@ -1,22 +1,34 @@
 package com.parking.controllers.michap21;
 
 import java.awt.EventQueue;
+
 import javax.swing.JFrame;
 import javax.swing.JButton;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+
 import java.awt.Color;
+
 import javax.swing.JRadioButton;
+
 import java.awt.Font;
+
 import javax.swing.JSeparator;
 
 import com.parking.domain.michap21.ParkingGarage;
 import com.parking.domain.michap21.ParkingTicket;
 import com.parking.service.michap21.ParkingTicketLookupService;
 import com.parking.service.michap21.ParkingTicketLookupServiceImpl;
+
+import javax.swing.JComboBox;
+import javax.swing.SwingConstants;
+import javax.swing.JTextPane;
+import javax.swing.JFormattedTextField;
 
 
 public class UIController {
@@ -37,17 +49,24 @@ public class UIController {
 	private JButton submitPaymentButton;
 	private JTextField paymentInputField;
 	private JRadioButton rdbtnCash;
-	private JRadioButton rdbtnCreditCard;
+	private JRadioButton rdbtnCreditCard; 
+	private JButton btnQuery;
 	
-	//Root object and lookup service. 
-	private ParkingGarage parkingGarage = new ParkingGarage();
+	
+	//Controllers and services
+	private CreateParkingTicketController createParkingTicketController;
+	private CalculateParkingTicketController calculateParkingTicketController;
+	private SubmitParkingTicketController submitParkingTicketController;
+	private GarageStatusController garageStatusController;
 	private ParkingTicketLookupService parkingTicketLookupService = new ParkingTicketLookupServiceImpl();
-	
-	//Controllers
-	private CreateParkingTicketController createParkingTicketController = new CreateParkingTicketController(parkingGarage, parkingTicketLookupService);
-	private CalculateParkingTicketController calculateParkingTicketController = new CalculateParkingTicketController(parkingGarage);
-	private SubmitParkingTicketController submitParkingTicketController = new SubmitParkingTicketController(parkingGarage, parkingTicketLookupService);
-	private GarageStatusController garageStatusController = new GarageStatusController(parkingGarage, parkingTicketLookupService);
+	private JSeparator separator_2;
+	private JComboBox comboBox;
+	private JLabel lblNewLabel;
+	private JLabel lblCreated;
+	private JLabel lblMsaleAmount;
+	private JLabel lblDate;
+	private JSeparator separator_3;
+	//private LookupServiceController lookupServiceController = new LookupServiceController();
 
 
 	/**
@@ -57,7 +76,7 @@ public class UIController {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					UIController window = new UIController();
+					UIController window = new UIController();				
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -70,6 +89,14 @@ public class UIController {
 	 * Create the application.
 	 */
 	public UIController() {
+		
+		ParkingGarage parkingGarage = new ParkingGarage();
+		
+		createParkingTicketController = new CreateParkingTicketController(parkingGarage);
+		calculateParkingTicketController = new CalculateParkingTicketController(parkingGarage);
+		submitParkingTicketController = new SubmitParkingTicketController(parkingGarage);
+		garageStatusController = new GarageStatusController(parkingGarage);
+		
 		initialize();
 		
 	}
@@ -78,9 +105,9 @@ public class UIController {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
+		frame = new JFrame("Parking System");
 		frame.getContentPane().setForeground(Color.BLACK);
-		frame.setBounds(100, 100, 818, 632);
+		frame.setBounds(100, 100, 992, 632);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);	
 		
@@ -91,10 +118,9 @@ public class UIController {
 			
 			public void actionPerformed(ActionEvent e) {
 					
-					initiateNewParkingTicketAction();		
+				initiateNewParkingTicketAction();		
 			}			
 		});
-		
 		
 		
 		btnSubmitTicketNumber.addActionListener(new ActionListener() {
@@ -109,6 +135,10 @@ public class UIController {
 		 final ButtonGroup group = new ButtonGroup();
 		    group.add(rdbtnCash);
 		    group.add(rdbtnCreditCard);
+		    
+		    separator_3 = new JSeparator();
+		    separator_3.setBounds(640, 163, 326, 2);
+		    frame.getContentPane().add(separator_3);
 		    
 		    rdbtnCash.addActionListener(new ActionListener() {
 		    	
@@ -126,12 +156,12 @@ public class UIController {
 			});
 		
 	   
-		submitPaymentButton.addActionListener(new ActionListener() {
+		   submitPaymentButton.addActionListener(new ActionListener() {
 			
-			public void actionPerformed(ActionEvent e) {
+			  public void actionPerformed(ActionEvent e) {
 								
 	               initiateSubmitPaymentAction(group);
-			}
+			  }
 	
 		});		
 		
@@ -148,7 +178,9 @@ public class UIController {
 			
 			generatedTicketId.setText(ticket.getParkingTicketId() + "");
 			parkingSpacesAvailableNumberLabel.setText(garageStatusController.getAvailableParkingSpaces() + "");
-			errorLabel.setText("");					
+			errorLabel.setText("");	
+			parkingTicketLookupService.addParkingTicketRecord(ticket);
+
 		}
 	    else{
 		
@@ -167,7 +199,7 @@ public class UIController {
 		
 		if(inputTicketNumber.length() != 5 || inputTicketNumber == null){
 			
-			errorLabel.setText("Please enter a valid parking ticket id.");
+			errorLabel.setText("Enter a valid parking ticket id.");
 
 		}
 		else{
@@ -181,20 +213,20 @@ public class UIController {
 			}
 			catch(NumberFormatException exception){
 				
-				errorLabel.setText("Please enter a valid parking ticket id.");
+				errorLabel.setText("Enter a valid parking ticket id.");
 			}
 			
 			ParkingTicket retrievedParkingTicket = parkingTicketLookupService.getParkingTicketRecord(inputParkingTicketId);
 			
 			if(retrievedParkingTicket == null){
 				
-				errorLabel.setText("Sorry, the ticket id you entered was not found.");
+				errorLabel.setText("The ticket id you entered was not found.");
 			}
 			else{
 				
-				float paymentOwed = calculateParkingTicketController.calculatePayment(retrievedParkingTicket);
+				String paymentOwed = calculateParkingTicketController.calculatePayment(retrievedParkingTicket);
 				
-				if(paymentOwed == 0){
+				if(paymentOwed.equals("")){
 					
 					errorLabel.setText("This ticket has already been redeemed.");
 				}
@@ -218,11 +250,20 @@ public class UIController {
 			
 		if(group.getSelection().getActionCommand().equals("Cash")){
 			
-			int balance;
+			boolean paymentIsSufficient = false;
 						
 			try{
 				
-				balance = submitParkingTicketController.submitCashPayment(paymentOrCardNumber);
+				paymentIsSufficient = submitParkingTicketController.isPaymentSufficient(paymentOrCardNumber);
+				
+				if(paymentIsSufficient){
+					
+					submitCashPayment(paymentOrCardNumber);
+				}
+				else{
+					
+					paymentMessageLabel.setText("The amount entered is insufficient. Try again.");
+				}
 			}
 			catch(NumberFormatException exception){
 				
@@ -236,7 +277,7 @@ public class UIController {
 
 				try{
 					
-					entrySuccessful = submitParkingTicketController.submitCreditPayment(paymentOrCardNumber);
+					entrySuccessful = submitParkingTicketController.submitCreditPayment(paymentOrCardNumber, parkingTicketLookupService);
 					
 				}
 				catch(NumberFormatException e1){
@@ -267,11 +308,34 @@ public class UIController {
 		}
 		
 	}
+	
+	
+		
+	private void submitCashPayment(String paymentOrCardNumber) {
+	
+		String balance = submitParkingTicketController.submitCashPayment(paymentOrCardNumber, parkingTicketLookupService);
+		
+		if(!balance.equals("0.00")){
+			
+			paymentMessageLabel.setText("Your change due is $" + balance + ". Please exit.");
+			paymentInputField.setText("");
+			errorLabel.setText("");
+			garageTotalSales.setText("$" + parkingTicketLookupService.getAllParkingTicketSales() + "");
+			parkingSpacesAvailableNumberLabel.setText(garageStatusController.getAvailableParkingSpaces() + "");
+		}
+		else{
+			
+			paymentMessageLabel.setText("Payment successful. Please exit the garage.");
+			paymentInputField.setText("");
+			errorLabel.setText("");
+			garageTotalSales.setText("$" + parkingTicketLookupService.getAllParkingTicketSales() + "");
+			parkingSpacesAvailableNumberLabel.setText(garageStatusController.getAvailableParkingSpaces() + "");
+		}
+		
+	}
 
 	
-			
-		
-		
+	
 	private void initiateGUIComponents(){
 						
 		JLabel lblGarageStatus = new JLabel("Garage Status:");
@@ -295,35 +359,31 @@ public class UIController {
 		frame.getContentPane().add(lblNumberOfCustomers);
 		
 		JLabel lblExitGate = new JLabel("Exit Gate");
-		lblExitGate.setBounds(521, 34, 99, 27);
+		lblExitGate.setBounds(425, 33, 99, 27);
 		lblExitGate.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		frame.getContentPane().add(lblExitGate);
 		
 		JLabel lblEntryGate = new JLabel("Entry Gate");
 		lblEntryGate.setForeground(new Color(0, 0, 0));
-		lblEntryGate.setBounds(123, 185, 99, 27);
+		lblEntryGate.setBounds(96, 191, 99, 27);
 		lblEntryGate.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		frame.getContentPane().add(lblEntryGate);
 		
 		JSeparator separator = new JSeparator(JSeparator.VERTICAL);
-		separator.setBounds(374, 11, 81, 572);
+		separator.setBounds(302, 11, 81, 572);
 		frame.getContentPane().add(separator);
 		
 		JSeparator separator_1 = new JSeparator();
-		separator_1.setBounds(10, 151, 364, 2);
-		frame.getContentPane().add(separator_1);	
-		
-		JSeparator separator_2 = new JSeparator();
-		separator_2.setBounds(374, 302, 418, 2);
-		frame.getContentPane().add(separator_2);
+		separator_1.setBounds(10, 163, 286, 2);
+		frame.getContentPane().add(separator_1);
 		
 		paymentInputField = new JTextField();
-		paymentInputField.setBounds(480, 451, 168, 37);
+		paymentInputField.setBounds(388, 426, 168, 37);
 		frame.getContentPane().add(paymentInputField);
 		paymentInputField.setColumns(10);
 		 		 
 		generatedTicketId = new JLabel("");
-		generatedTicketId.setBounds(142, 405, 80, 39);
+		generatedTicketId.setBounds(123, 401, 80, 39);
 		generatedTicketId.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		frame.getContentPane().add(generatedTicketId);
 		 
@@ -331,71 +391,137 @@ public class UIController {
 		parkingSpacesAvailableNumberLabel.setBounds(192, 62, 46, 14);
 		parkingSpacesAvailableNumberLabel.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		frame.getContentPane().add(parkingSpacesAvailableNumberLabel);
-		parkingSpacesAvailableNumberLabel.setText(parkingGarage.getParkingLot().getAvailableParkingSpaces() + "");
+		parkingSpacesAvailableNumberLabel.setText(garageStatusController.getAvailableParkingSpaces() + "");
 		
 	    lblYourTicketNumber = new JLabel("Your Parking Ticket Number is:");
-		lblYourTicketNumber.setBounds(93, 356, 299, 27);
+		lblYourTicketNumber.setBounds(68, 344, 299, 27);
 		frame.getContentPane().add(lblYourTicketNumber);
 					
 		errorLabel = new JLabel("");
-		errorLabel.setBounds(483, 113, 268, 22);
+		errorLabel.setBounds(385, 113, 244, 22);
 		frame.getContentPane().add(errorLabel);
 		
 		btnNewParkingTicket = new JButton("Dispense Ticket");
 		btnNewParkingTicket.setBackground(Color.GRAY);
 		btnNewParkingTicket.setForeground(Color.BLACK);
-		btnNewParkingTicket.setBounds(94, 265, 163, 55);
+		btnNewParkingTicket.setBounds(68, 257, 163, 55);
 		frame.getContentPane().add(btnNewParkingTicket);	
 		
 		ticketIdTextField = new JTextField();
 		ticketIdTextField.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		ticketIdTextField.setBounds(485, 153, 163, 37);
+		ticketIdTextField.setBounds(388, 153, 163, 37);
 		frame.getContentPane().add(ticketIdTextField);
 		ticketIdTextField.setColumns(10);	
 		
 		lblEnterYourdigit = new JLabel("Enter your 5-digit ticket number:");
-		lblEnterYourdigit.setBounds(485, 83, 307, 27);
+		lblEnterYourdigit.setBounds(388, 83, 307, 27);
 		frame.getContentPane().add(lblEnterYourdigit);
 		
 		btnSubmitTicketNumber = new JButton("Submit Ticket Number");
 		btnSubmitTicketNumber.setBackground(Color.GRAY);
-		btnSubmitTicketNumber.setBounds(485, 217, 163, 55);
+		btnSubmitTicketNumber.setBounds(388, 219, 163, 55);
 		frame.getContentPane().add(btnSubmitTicketNumber);
 		
 		paymentMessageLabel = new JLabel("");
-		paymentMessageLabel.setBounds(465, 426, 286, 14);
+		paymentMessageLabel.setBounds(380, 401, 249, 14);
 		frame.getContentPane().add(paymentMessageLabel);
 			
 		lblSelectMethodOf = new JLabel("Select method of payment:");
-		lblSelectMethodOf.setBounds(484, 329, 286, 22);
+		lblSelectMethodOf.setBounds(388, 317, 286, 22);
 		frame.getContentPane().add(lblSelectMethodOf);
 		
 	    garageTotalSales = new JLabel("$0");
-	    garageTotalSales.setBounds(91, 89, 46, 14);
+	    garageTotalSales.setBounds(91, 89, 112, 14);
 	    frame.getContentPane().add(garageTotalSales);
 	
 	    submitPaymentButton = new JButton("Submit Payment");
 	    submitPaymentButton.setBackground(Color.GRAY);
-	    submitPaymentButton.setBounds(480, 509, 168, 55);	
+	    submitPaymentButton.setBounds(388, 501, 168, 55);	
 	    frame.getContentPane().add(submitPaymentButton);
 	    
 		rdbtnCash = new JRadioButton("Cash");
 		rdbtnCash.setActionCommand("Cash");
-		rdbtnCash.setBounds(479, 358, 109, 23);
+		rdbtnCash.setBounds(388, 346, 109, 23);
 		frame.getContentPane().add(rdbtnCash);
 		
 		rdbtnCreditCard = new JRadioButton("Credit Card");
 		rdbtnCreditCard.setActionCommand("Credit");
-		rdbtnCreditCard.setBounds(479, 388, 109, 23);
+		rdbtnCreditCard.setBounds(388, 372, 109, 23);
 		frame.getContentPane().add(rdbtnCreditCard);
 		
+		separator_2 = new JSeparator(SwingConstants.VERTICAL);
+	    separator_2.setBounds(634, 11, 2, 572);
+	    frame.getContentPane().add(separator_2);
+	    
+	    comboBox = new JComboBox();
+	    comboBox.setBounds(686, 86, 228, 20);
+	    frame.getContentPane().add(comboBox);
+	    
+	    lblNewLabel = new JLabel("Ticket ID");
+	    lblNewLabel.setBounds(649, 176, 56, 14);
+	    frame.getContentPane().add(lblNewLabel);
+	    
+	    lblCreated = new JLabel("Minutes Active");
+	    lblCreated.setBounds(788, 176, 89, 14);
+	    frame.getContentPane().add(lblCreated);
+	    
+	    lblMsaleAmount = new JLabel("Sale Amount");
+	    lblMsaleAmount.setBounds(895, 176, 81, 14);
+	    frame.getContentPane().add(lblMsaleAmount);
+	    
+	    lblDate = new JLabel("Date");
+	    lblDate.setBounds(732, 176, 36, 14);
+	    frame.getContentPane().add(lblDate);
+	    
+	    JLabel recordLineItem_1 = new JLabel("");
+	    recordLineItem_1.setBounds(634, 201, 342, 17);
+	    frame.getContentPane().add(recordLineItem_1);
+	    
+	    JLabel recordLineItem_2 = new JLabel("");
+	    recordLineItem_2.setBounds(634, 219, 342, 17);
+	    frame.getContentPane().add(recordLineItem_2);
+	    
+	    JLabel recordLineItem_3 = new JLabel("");
+	    recordLineItem_3.setBounds(634, 239, 342, 17);
+	    frame.getContentPane().add(recordLineItem_3);
+	    
+	    JLabel recordLineItem_4 = new JLabel("");
+	    recordLineItem_4.setBounds(634, 257, 342, 17);
+	    frame.getContentPane().add(recordLineItem_4);
+	    
+	    JLabel recordLineItem_5 = new JLabel("");
+	    recordLineItem_5.setBounds(634, 277, 342, 17);
+	    frame.getContentPane().add(recordLineItem_5);
+	    
+	    JLabel recordLineItem_6 = new JLabel("");
+	    recordLineItem_6.setBounds(634, 295, 342, 17);
+	    frame.getContentPane().add(recordLineItem_6);
+	    
+	    JLabel recordLineItem_7 = new JLabel("");
+	    recordLineItem_7.setBounds(634, 317, 342, 17);
+	    frame.getContentPane().add(recordLineItem_7);
+	    
+	    JLabel recordLineItem_8 = new JLabel("");
+	    recordLineItem_8.setBounds(634, 335, 342, 17);
+	    frame.getContentPane().add(recordLineItem_8);
+	    
+	    JLabel recordLineItem_9 = new JLabel("");
+	    recordLineItem_9.setBounds(634, 354, 342, 17);
+	    frame.getContentPane().add(recordLineItem_9);
+	    
+	    JLabel recordLineItem_10 = new JLabel("");
+	    recordLineItem_10.setBounds(634, 376, 342, 17);
+	    frame.getContentPane().add(recordLineItem_10);
+	    
+	    btnQuery = new JButton("Query");
+	    btnQuery.addActionListener(new ActionListener() {
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		
+	    		//IMPLEMENT QUERY FUNCTIONALITY
+	    	}
+	    });
+	    btnQuery.setBounds(750, 119, 89, 23);
+	    frame.getContentPane().add(btnQuery);
+		
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 }
