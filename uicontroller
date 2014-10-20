@@ -1,34 +1,25 @@
 package com.parking.controllers.michap21;
 
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JButton;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-
 import java.awt.Color;
-
 import javax.swing.JRadioButton;
-
 import java.awt.Font;
-
 import javax.swing.JSeparator;
+import javax.swing.JComboBox;
+import javax.swing.SwingConstants;
 
 import com.parking.domain.michap21.ParkingGarage;
 import com.parking.domain.michap21.ParkingTicket;
 import com.parking.service.michap21.ParkingTicketLookupService;
 import com.parking.service.michap21.ParkingTicketLookupServiceImpl;
 
-import javax.swing.JComboBox;
-import javax.swing.SwingConstants;
-import javax.swing.JTextPane;
-import javax.swing.JFormattedTextField;
 
 
 public class UIController {
