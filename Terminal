@@ -45,57 +45,28 @@ public class Terminal {
 	}
 
 
-	public float calculatePayment(ParkingTicket userParkingTicket) {
+	public String calculatePayment(ParkingTicket userParkingTicket) {
 		
 		if(userParkingTicket.getMinutesActive() == 0){
 			
 			userParkingTicket.setRedemptionTime(System.currentTimeMillis());
 			long millisecondsParked = calculateTimeParked(userParkingTicket);		
 			paymentOwed = convertMillisecondsToMinutes(millisecondsParked) * getRatePerMinute();
-			this.setPaymentOwed(paymentOwed);
+			String amountOwed = String.format("%.2f", paymentOwed);
+			this.setPaymentOwed(Float.parseFloat(amountOwed));
 			this.setInputParkingTicket(userParkingTicket);
 						
-			return paymentOwed;	
+			return amountOwed;	
 		}
 		
-		 return 0;						
+		 return "";						
 	}
 	
 	
-	
-	private float convertMillisecondsToMinutes(long millisecondsParked){
-		
-		float seconds = (float) ((millisecondsParked/1000) %60);
-
-		float minutes = (float) (((millisecondsParked-seconds)/1000) /60);	
-		
-		float roundedMinutes = (float) (Math.round(minutes*100.0)/100.0);
-		
-		//Fractions of minutes will be returned for precision purposes.
-		return roundedMinutes;		
-	}
-	
-	
-	
-	private long calculateTimeParked(ParkingTicket parkingTicket){
-		
-		long difference = parkingTicket.getRedemptionTime() - parkingTicket.getCreationTime();
-		
-		parkingTicket.setMinutesActive(difference);
-		
-		return difference;	
-		
-	}
-
 
 	public float calculateBalance(float amountPaid) {
-			
-		float balance = this.getPaymentOwed() - amountPaid;
 		
-		if(balance > 0){
-			
-			return balance;
-		}
+		float balance = amountPaid - this.getPaymentOwed();
 		
 		return balance;
 	}
@@ -108,6 +79,44 @@ public class Terminal {
 		currentTicket.setStatus("Redeemed");
 		currentTicket.setFundsGenerated(this.getPaymentOwed());
 		
+	}
+	
+	
+    private float convertMillisecondsToMinutes(long millisecondsParked){
+		
+		float seconds = (float) ((millisecondsParked/1000) %60);
+
+		float minutes = (float) (((millisecondsParked-seconds)/1000) /60);
+		
+		String strDouble = String.format("%.2f", minutes);
+		
+		System.out.println("strDouble is equal to " + strDouble);
+				
+		return 	Float.parseFloat(strDouble);	
+		
+	 }
+	
+	
+	
+	 private long calculateTimeParked(ParkingTicket parkingTicket){
+		
+		long difference = parkingTicket.getRedemptionTime() - parkingTicket.getCreationTime();
+		
+		parkingTicket.setMinutesActive(difference);
+		
+		return difference;	
+		
+	 }
+
+
+	public boolean isPaymentSufficient(float parsedPayment) {
+		
+		if(parsedPayment >= this.getPaymentOwed()){
+			
+			return true;
+		}
+		
+		return false;
 	}
 	
 }
