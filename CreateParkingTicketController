@@ -2,19 +2,17 @@ package com.parking.controllers.michap21;
 
 import com.parking.domain.michap21.ParkingGarage;
 import com.parking.domain.michap21.ParkingTicket;
-import com.parking.service.michap21.ParkingTicketLookupService;
 
 
 public class CreateParkingTicketController {
 
-	private ParkingTicketLookupService parkingTicketLookupService;
-	private static ParkingGarage parkingGarage;
+	
+	private ParkingGarage parkingGarage;
 	
 	
-	public CreateParkingTicketController(ParkingGarage parkingGarage, ParkingTicketLookupService parkingTicketLookupService) {
+	public CreateParkingTicketController(ParkingGarage parkingGarage) {
 		
 		this.parkingGarage = parkingGarage;
-		this.parkingTicketLookupService = parkingTicketLookupService;
 	}
 
 
@@ -23,7 +21,6 @@ public class CreateParkingTicketController {
 		if(parkingGarage.parkingIsAvailable()){
 
 		ParkingTicket ticket = parkingGarage.getEntryGate().getTicketDispenser().createParkingTicket(parkingGarage.getParkingLot());
-		parkingTicketLookupService.addParkingTicketRecord(ticket);
 		
 		return ticket;
 		
