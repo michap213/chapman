@@ -16,7 +16,7 @@ public class CalculateParkingTicketController {
 
 	public String calculatePayment(ParkingTicket retrievedParkingTicket) {
 
-		return parkingGarage.getExitGate().getTerminal().calculatePayment(retrievedParkingTicket);
+		return parkingGarage.getExitGate().getTerminal().calculatePayment(retrievedParkingTicket)
 		
 	}
 
