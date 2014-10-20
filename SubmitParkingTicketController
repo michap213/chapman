@@ -5,25 +5,36 @@ import com.parking.service.michap21.ParkingTicketLookupService;
 
 public class SubmitParkingTicketController {
 	
+	
 	private ParkingGarage parkingGarage;
-	private ParkingTicketLookupService parkingTicketLookupService;
+	
 
-	public SubmitParkingTicketController(ParkingGarage parkingGarage, ParkingTicketLookupService parkingTicketLookupService) {
+	
+	public SubmitParkingTicketController(ParkingGarage parkingGarage) {
 		
 		this.parkingGarage = parkingGarage;	
-		this.parkingTicketLookupService = parkingTicketLookupService;
 	}
 
-	public int submitCashPayment(String payment) throws NumberFormatException {
+	
+	
+	public String submitCashPayment(String payment, 
+			      ParkingTicketLookupService parkingTicketLookupService) throws NumberFormatException {
 		
-		float parsedPayment = Float.parseFloat(payment);
-		float balance = parkingGarage.getExitGate().getTerminal().calculateBalance(parsedPayment);
-		
-		return 0;
-		
+		 float parsedPayment = Float.parseFloat(payment);
+				
+	     float balance = parkingGarage.getExitGate().getTerminal().calculateBalance(parsedPayment);
+	     parkingGarage.getExitGate().getTerminal().storePaymentRecord(parkingTicketLookupService);
+	     parkingGarage.getParkingLot().incrementAvailableParkingSpaces();
+			
+	     String presentationBalance = String.format("%.2f", balance);
+	     
+		 return presentationBalance;			
 	}
 
-	public boolean submitCreditPayment(String paymentOrCardNumber) throws NumberFormatException{
+	
+	
+	public boolean submitCreditPayment(String paymentOrCardNumber, 
+			     ParkingTicketLookupService parkingTicketLookupService) throws NumberFormatException{
 		
 	    if(paymentOrCardNumber.length() == 16){
 	    	
@@ -38,5 +49,15 @@ public class SubmitParkingTicketController {
 	    return false;
 	}
 
+
 	
+	public boolean isPaymentSufficient(String paymentOrCardNumber) {
+		
+		float parsedPayment = Float.parseFloat(paymentOrCardNumber);
+		boolean paymentIsSufficient = parkingGarage.getExitGate().getTerminal().isPaymentSufficient(parsedPayment);
+		
+		return paymentIsSufficient;
+		
+	}
+
 }
