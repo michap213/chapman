@@ -1,19 +1,16 @@
 package com.parking.controllers.michap21;
 
 import com.parking.domain.michap21.ParkingGarage;
-import com.parking.service.michap21.ParkingTicketLookupService;
 
 
 public class GarageStatusController {
   
  private ParkingGarage parkingGarage;
- private ParkingTicketLookupService parkingTicketLookupService;
 	
 	
-  public GarageStatusController(ParkingGarage parkingGarage, ParkingTicketLookupService parkingTicketLookupService) {
+  public GarageStatusController(ParkingGarage parkingGarage) {
 	  
 	  this.parkingGarage = parkingGarage;
-	  this.parkingTicketLookupService = parkingTicketLookupService;
 	
   }
 
